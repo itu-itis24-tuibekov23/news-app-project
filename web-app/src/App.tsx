@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getTopHeadlines } from "./api/newsApi";
 import { useDebounce } from './hooks/useDebounce';
+import SkeletonCard from './components/SkeletonCard';
+
 
 
 // Тип статьи — чтобы удобно работать с объектами новостей
@@ -79,7 +81,17 @@ function App() {
       <h1>Новости</h1>
 
       {isLoading ? (
-        <p>Загрузка...</p>
+        <div
+        style={{
+          display: 'grid',
+          gap: '1.5rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        }}
+      >
+        {Array.from({ length: 6 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </div>
       ) : (
         <div
           style={{
