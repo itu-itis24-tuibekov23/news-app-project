@@ -14,21 +14,31 @@ function App() {
   const [articles, setArticles] = useState<Article[]>([]);
   // Состояние для отображения "Загрузка..."
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [country, setCountry] = useState('us');
 
   useEffect(() => {
     // Функция для получения новостей
     const fetchNews = async () => {
       setIsLoading(true); // спиннер
-      const data = await getTopHeadlines(); // новости через API
+      const data = await getTopHeadlines(country); // новости через API
       setArticles(data); // сохранить в состояние
       setIsLoading(false); // снимать "загрузка"
     };
 
     fetchNews(); 
-  }, []);
+  }, [country]); // при изменении страны
+  // useEffect с пустым массивом зависимостей [] — вызовется только один раз при загрузке страницы
+  // useEffect с массивом зависимостей [country] — вызовется при загрузке страницы и при изменении country
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <select value={country} onChange={(e) => setCountry(e.target.value)}>
+      <option value="us">🇺🇸 США</option>
+      <option value="ru">🇷🇺 Россия</option>
+      <option value="de">🇩🇪 Германия</option>
+      <option value="fr">🇫🇷 Франция</option>
+    </select>
+
       <h1>Новости</h1>
 
       {/* Если идёт загрузка — показать текст */}
@@ -62,12 +72,7 @@ function App() {
               <p>{article.description}</p>
 
               {/* Кнопка "Читать" со ссылкой */}
-              <a
-                href={article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'lightblue' }}
-              >
+              <a href={article.url} target="_blank" rel="noopener noreferrer" style={{ color: 'lightblue' }}>
                 Читать
               </a>
             </div>
