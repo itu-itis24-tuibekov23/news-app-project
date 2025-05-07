@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// Импорт хуков React и функции API
+import { useEffect, useState } from 'react';
+import { getTopHeadlines } from './api/newsApi';
+
+// Тип для одной новости
+type Article = {
+  title: string;
+  description: string;
+  url: string;
+  urlToImage: string;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Состояние для списка новостей
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    // Асинхронная функция загрузки новостей
+    const fetchNews = async () => {
+      const news = await getTopHeadlines();
+      setArticles(news); // Сохраняем в состояние
+    };
+
+    fetchNews();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h1>Новости</h1>
+      {articles.map((article, index) => (
+        <div key={index}>
+          <h2>{article.title}</h2>
+          <img src={article.urlToImage} width="300" />
+          <p>{article.description}</p>
+          <a href={article.url} target="_blank">Читать</a>
+        </div>
+      ))}
+    </div>
+  );
 }
 
-export default App
+export default App;
