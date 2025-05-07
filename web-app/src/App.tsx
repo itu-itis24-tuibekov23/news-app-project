@@ -45,7 +45,7 @@ function App() {
         <option value="de">🇩🇪 Германия</option>
         <option value="fr">🇫🇷 Франция</option>
       </select>
-  
+
       <input
         type="text"
         placeholder="Поиск новостей..."
@@ -60,9 +60,24 @@ function App() {
           maxWidth: "400px",
         }}
       />
-  
+
+      <button
+        onClick={() => setSearchQuery("")}
+        style={{
+          marginLeft: "1rem",
+          padding: "0.5rem 1rem",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          backgroundColor: "#444",
+          color: "#fff",
+          cursor: "pointer",
+        }}
+      >
+        Сбросить
+      </button>
+
       <h1>Новости</h1>
-  
+
       {isLoading ? (
         <p>Загрузка...</p>
       ) : (
