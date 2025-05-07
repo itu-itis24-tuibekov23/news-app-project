@@ -13,12 +13,15 @@ type Article = {
 function App() {
   // Состояние для списка новостей
   const [articles, setArticles] = useState<Article[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     // Асинхронная функция загрузки новостей
     const fetchNews = async () => {
-      const news = await getTopHeadlines();
-      setArticles(news); // Сохраняем в состояние
+      setIsLoading(true); // 🔄 Показываем спиннер
+      const data = await getTopHeadlines();
+      setArticles(data); // Сохраняем в состояние
+      setIsLoading(false);
     };
 
     fetchNews();
@@ -27,14 +30,17 @@ function App() {
   return (
     <div>
       <h1>Новости</h1>
-      {articles.map((article, index) => (
-        <div key={index}>
-          <h2>{article.title}</h2>
-          <img src={article.urlToImage} width="300" />
-          <p>{article.description}</p>
-          <a href={article.url} target="_blank">Читать</a>
-        </div>
-      ))}
+      {isLoading ? (
+        <p>Загрузка...</p> // ⏳ пока данные не пришли
+      ) : (
+        <ul>
+          {articles.map((article, index) => (
+            <li key={index}>
+              <a href={article.url} target="_blank">{article.title}</a>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
