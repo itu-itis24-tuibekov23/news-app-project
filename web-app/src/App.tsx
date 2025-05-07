@@ -46,6 +46,9 @@ function App() {
       ) : (
         // Если загрузка закончилась — показать список карточек
         <div style={{ display: 'grid', gap: '1.5rem' }}>
+          {articles.length === 0 && (
+            <p style={{ color: 'gray' }}>Нет новостей для выбранной страны.</p>
+          )}
           {articles.map((article, index) => (
             <div
               key={index}
