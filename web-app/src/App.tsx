@@ -28,7 +28,6 @@ function App() {
     fetchNews(); 
   }, [country]); // при изменении страны
   // useEffect с пустым массивом зависимостей [] — вызовется только один раз при загрузке страницы
-  // useEffect с массивом зависимостей [country] — вызовется при загрузке страницы и при изменении country
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
