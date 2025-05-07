@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTopHeadlines } from "./api/newsApi";
+import { useDebounce } from './hooks/useDebounce';
+
 
 // Тип статьи — чтобы удобно работать с объектами новостей
 type Article = {
@@ -16,6 +18,7 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [country, setCountry] = useState("us");
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   useEffect(() => {
     // Функция для получения новостей
@@ -31,7 +34,7 @@ function App() {
   // useEffect с пустым массивом зависимостей [] — вызовется только один раз при загрузке страницы
 
   const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchQuery.toLowerCase())
+    article.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
   );  
 
   return (
