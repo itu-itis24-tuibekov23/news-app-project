@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTopHeadlines } from "./api/newsApi";
-import { useDebounce } from './hooks/useDebounce';
-import SkeletonCard from './components/SkeletonCard';
-
-
+import { useDebounce } from "./hooks/useDebounce";
+import SkeletonCard from "./components/SkeletonCard";
 
 // Тип статьи — чтобы удобно работать с объектами новостей
 type Article = {
@@ -21,23 +19,30 @@ function App() {
   const [country, setCountry] = useState("us");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Функция для получения новостей
     const fetchNews = async () => {
-      setIsLoading(true); // спиннер
-      const data = await getTopHeadlines(country); // новости через API
-      setArticles(data); // сохранить в состояние
-      setIsLoading(false); // снимать "загрузка"
+      try {
+        setIsLoading(true);
+        const data = await getTopHeadlines(country);
+        setArticles(data);
+        setError(null); // сбрасываем ошибку, если всё ок
+      } catch (err) {
+        setError("Не удалось загрузить новости. Попробуйте позже.");
+        setArticles([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchNews();
-  }, [country]); // при изменении страны
+  }, [country]);
   // useEffect с пустым массивом зависимостей [] — вызовется только один раз при загрузке страницы
 
   const filteredArticles = articles.filter((article) =>
     article.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-  );  
+  );
 
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
@@ -80,18 +85,20 @@ function App() {
 
       <h1>Новости</h1>
 
+      {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
+
       {isLoading ? (
         <div
-        style={{
-          display: 'grid',
-          gap: '1.5rem',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        }}
-      >
-        {Array.from({ length: 6 }).map((_, index) => (
-          <SkeletonCard key={index} />
-        ))}
-      </div>
+          style={{
+            display: "grid",
+            gap: "1.5rem",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          }}
+        >
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
+        </div>
       ) : (
         <div
           style={{
@@ -100,40 +107,41 @@ function App() {
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           }}
         >
-          {filteredArticles.length === 0 ? (
-            <p style={{ color: "gray" }}>Ничего не найдено по запросу.</p>
-          ) : (
-            filteredArticles.map((article, index) => (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid #ccc",
-                  borderRadius: "10px",
-                  padding: "1rem",
-                  backgroundColor: "#1e1e1e",
-                  color: "#fff",
-                }}
-              >
-                <h2>{article.title}</h2>
-                {article.urlToImage && (
-                  <img
-                    src={article.urlToImage}
-                    alt="image"
-                    style={{ maxWidth: "100%", borderRadius: "8px" }}
-                  />
-                )}
-                <p>{article.description}</p>
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "lightblue" }}
+          {!error &&
+            (filteredArticles.length === 0 ? (
+              <p style={{ color: "gray" }}>Ничего не найдено по запросу.</p>
+            ) : (
+              filteredArticles.map((article, index) => (
+                <div
+                  key={index}
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "10px",
+                    padding: "1rem",
+                    backgroundColor: "#1e1e1e",
+                    color: "#fff",
+                  }}
                 >
-                  Читать
-                </a>
-              </div>
-            ))
-          )}
+                  <h2>{article.title}</h2>
+                  {article.urlToImage && (
+                    <img
+                      src={article.urlToImage}
+                      alt="image"
+                      style={{ maxWidth: "100%", borderRadius: "8px" }}
+                    />
+                  )}
+                  <p>{article.description}</p>
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "lightblue" }}
+                  >
+                    Читать
+                  </a>
+                </div>
+              ))
+            ))}
         </div>
       )}
     </div>
