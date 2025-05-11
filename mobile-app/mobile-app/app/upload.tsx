@@ -5,6 +5,8 @@ import * as DocumentPicker from 'expo-document-picker';
 export default function UploadScreen() {
     const [file, setFile] = useState<any>(null);
     const [loading, setLoading] = useState(false);
+    const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+
     
 
   const pickDocument = async () => {
@@ -37,7 +39,7 @@ export default function UploadScreen() {
       });
   
       if (response.ok) {
-        alert('Файл успешно загружен!');
+        setUploadedFiles(prev => [...prev, file.name]); // Добавляем файл в список
       } else {
         alert('Ошибка при загрузке файла');
       }
@@ -68,8 +70,18 @@ export default function UploadScreen() {
       {loading && (
         <Text style={styles.fileText}>Загрузка...</Text>
       )}
+  
+      {uploadedFiles.length > 0 && (
+        <View style={styles.listContainer}>
+          <Text style={styles.listTitle}>Загруженные файлы:</Text>
+          {uploadedFiles.map((file, index) => (
+            <Text key={index} style={styles.fileItem}>• {file}</Text>
+          ))}
+        </View>
+      )}
     </View>
   );
+  
   
 }
 
@@ -83,6 +95,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
   },
+  listContainer: {
+    marginTop: 30,
+    alignItems: 'flex-start',
+  },
+  listTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  fileItem: {
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  
 });
 
 
