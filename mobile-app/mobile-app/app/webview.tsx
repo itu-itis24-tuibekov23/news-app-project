@@ -15,19 +15,18 @@ export default function WebScreen() {
 
   return (
     <View style={styles.container}>
-      <Button
-        title="Logout"
-        color="#ff5c5c"
-        onPress={() => router.replace("/login")}
-      />
       {loading && !error && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#0000ff" />
-          <Button title="Logout" onPress={() => router.replace("/login")} />
           <Text style={styles.text}>Загрузка...</Text>
+          <Button
+            title="Logout"
+            color="#ff5c5c"
+            onPress={() => router.replace("/login")}
+          />
         </View>
       )}
-
+  
       {error ? (
         <View style={styles.overlay}>
           <Text style={styles.errorText}>Не удалось загрузить страницу</Text>
@@ -46,6 +45,7 @@ export default function WebScreen() {
       )}
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
