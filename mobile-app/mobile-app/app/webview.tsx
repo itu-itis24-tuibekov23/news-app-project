@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Button,
+  Alert,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
@@ -22,11 +23,16 @@ export default function WebScreen() {
           <Button
             title="Logout"
             color="#ff5c5c"
-            onPress={() => router.replace("/login")}
+            onPress={() => {
+              Alert.alert("Подтверждение", "Вы уверены, что хотите выйти?", [
+                { text: "Отмена", style: "cancel" },
+                { text: "Выйти", onPress: () => router.replace("/login") },
+              ]);
+            }}
           />
         </View>
       )}
-  
+
       {error ? (
         <View style={styles.overlay}>
           <Text style={styles.errorText}>Не удалось загрузить страницу</Text>
@@ -45,7 +51,6 @@ export default function WebScreen() {
       )}
     </View>
   );
-  
 }
 
 const styles = StyleSheet.create({
