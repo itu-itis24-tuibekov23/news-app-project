@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -6,6 +6,14 @@ export default function UploadScreen() {
     const [file, setFile] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('uploadedFiles');
+        if (stored) {
+          setUploadedFiles(JSON.parse(stored));
+        }
+      }, []);
+      
 
     
 
@@ -39,7 +47,12 @@ export default function UploadScreen() {
       });
   
       if (response.ok) {
-        setUploadedFiles(prev => [...prev, file.name]); // Добавляем файл в список
+        setUploadedFiles(prev => {
+            const updated = [...prev, file.name];
+            localStorage.setItem('uploadedFiles', JSON.stringify(updated));
+            return updated;
+          });
+          
       } else {
         alert('Ошибка при загрузке файла');
       }
