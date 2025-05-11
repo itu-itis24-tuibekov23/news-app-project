@@ -6,6 +6,7 @@ import {
   View,
   Button,
   Alert,
+  Platform,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
@@ -14,22 +15,34 @@ export default function WebScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+const handleLogout = () => {
+  if (Platform.OS === "web") {
+    const confirmed = window.confirm("Вы уверены, что хотите выйти?");
+    if (confirmed) {
+      router.replace("/login");
+    }
+  } else {
+    Alert.alert("Подтверждение", "Вы уверены, что хотите выйти?", [
+      { text: "Отмена", style: "cancel" },
+      { text: "Выйти", onPress: () => router.replace("/login") },
+    ]);
+  }
+};
+
+
   return (
     <View style={styles.container}>
+      {/* Always visible logout button */}
+      <Button
+        title="Logout"
+        color="#ff5c5c"
+        onPress={handleLogout}
+      />
+
       {loading && !error && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#0000ff" />
           <Text style={styles.text}>Загрузка...</Text>
-          <Button
-            title="Logout"
-            color="#ff5c5c"
-            onPress={() => {
-              Alert.alert("Подтверждение", "Вы уверены, что хотите выйти?", [
-                { text: "Отмена", style: "cancel" },
-                { text: "Выйти", onPress: () => router.replace("/login") },
-              ]);
-            }}
-          />
         </View>
       )}
 

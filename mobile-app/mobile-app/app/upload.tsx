@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function UploadScreen() {
     const [file, setFile] = useState<any>(null);
@@ -8,12 +10,14 @@ export default function UploadScreen() {
     const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
     useEffect(() => {
-        const stored = localStorage.getItem('uploadedFiles');
-        if (stored) {
-          setUploadedFiles(JSON.parse(stored));
-        }
+        const loadFiles = async () => {
+          const stored = await AsyncStorage.getItem('uploadedFiles');
+          if (stored) {
+            setUploadedFiles(JSON.parse(stored));
+          }
+        };
+        loadFiles();
       }, []);
-      
 
     
 
@@ -49,7 +53,7 @@ export default function UploadScreen() {
       if (response.ok) {
         setUploadedFiles(prev => {
             const updated = [...prev, file.name];
-            localStorage.setItem('uploadedFiles', JSON.stringify(updated));
+            AsyncStorage.setItem('uploadedFiles', JSON.stringify(updated));
             return updated;
           });
           

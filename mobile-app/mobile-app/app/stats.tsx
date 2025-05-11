@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 export default function StatsScreen() {
     const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
     useEffect(() => {
-        const stored = localStorage.getItem('uploadedFiles');
-        if (stored) {
+        const loadFiles = async () => {
+          const stored = await AsyncStorage.getItem('uploadedFiles');
+          if (stored) {
             setUploadedFiles(JSON.parse(stored));
-        }
-    }, []);
+          }
+        };
+        loadFiles();
+      }, []);
+      
 
 
   return (
