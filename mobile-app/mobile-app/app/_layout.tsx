@@ -11,6 +11,12 @@ export default function Layout() {
           title: 'Home',
         }}
       />
+      <Tabs.Screen 
+        name="upload" 
+        options={{ 
+            title: 'Upload',
+        }} 
+       />
       <Tabs.Screen
         name="stats"
         options={{
