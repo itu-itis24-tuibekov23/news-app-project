@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View , Button } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { router } from 'expo-router';
+
+
 
 export default function WebScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
 
   return (
     <View style={styles.container}>
       {loading && !error && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#0000ff" />
+          <Button title="Logout" onPress={() => router.replace('/login')} />
           <Text style={styles.text}>Загрузка...</Text>
         </View>
       )}
@@ -21,7 +26,7 @@ export default function WebScreen() {
         </View>
       ) : (
         <WebView
-          source={{ uri: 'http://localhost:5173' }} // или замените на свой внешний адрес
+          source={{ uri: 'http://localhost:5173' }} 
           onLoadEnd={() => setLoading(false)}
           onError={() => {
             setLoading(false);
