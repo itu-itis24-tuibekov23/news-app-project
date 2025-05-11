@@ -6,18 +6,18 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+
 interface CardProps {
   title: string;
-  description?: string;
   body?: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, body, description }) => {
+const Card: React.FC<CardProps> = ({ title, body }) => {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.body}>{body}</Text>
-      {description && <Text style={styles.description}>{description}</Text>}
+      {body && <Text style={styles.body}>{body}</Text>}
     </View>
   );
 };

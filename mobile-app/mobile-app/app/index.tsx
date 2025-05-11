@@ -1,55 +1,53 @@
-import React, { useState } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
-import Input from '@/components/Input'; // компонент Input из папки components
-import Card from '@/components/Card';   // компонент Card из папки components
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, StyleSheet, Text } from 'react-native';
+import Input from '@/components/Input';
+import Card from '@/components/Card';
 
-// Локальные данные — список новостей
-const articles = [
-  {
-    id: '1',
-    title: 'Новость 1',
-    description: 'Описание новости 1',
-  },
-  {
-    id: '2',
-    title: 'Новость 2',
-    description: 'Описание новости 2',
-  },
-  {
-    id: '3',
-    title: 'Новость 3',
-    description: 'Описание новости 3',
-  },
-];
+interface Article {
+    id: string;
+    title: string;
+    body?: string;
+  }
 
 export default function HomeScreen() {
-  const [searchText, setSearchText] = useState(''); // состояние для поиска
+  const [searchText, setSearchText] = useState('');
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true); // состояние загрузки
 
-  // фильтруем статьи по введённому тексту
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then(res => res.json())
+      .then(data => {
+        setArticles(data);
+        setLoading(false);
+      });
+  }, []);
+
   const filteredArticles = articles.filter(article =>
     article.title.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
-      {/* Поле ввода текста для фильтрации */}
       <Input value={searchText} onChangeText={setSearchText} />
 
-      {/* Вывод отфильтрованных карточек */}
-      <ScrollView contentContainerStyle={{ paddingVertical: 10 }}>
-        {filteredArticles.map(article => (
-          <Card
-            key={article.id}
-            title={article.title}
-            description={article.description}
-          />
-        ))}
-      </ScrollView>
+      {loading ? (
+        <Text>Загрузка...</Text>
+      ) : (
+        <ScrollView contentContainerStyle={{ paddingVertical: 10 }}>
+          {filteredArticles.map(article => (
+            <Card
+              key={article.id}
+              title={article.title}
+              body={article.body}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }
 
-// Стили для контейнера
 const styles = StyleSheet.create({
   container: {
     flex: 1,
