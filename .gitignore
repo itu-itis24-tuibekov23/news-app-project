@@ -1,0 +1,15 @@
+# Игнорируем node_modules в корне
+**/node_modules/
+
+# Игнорируем временные системные файлы
+.DS_Store
+
+# Игнорируем логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Игнорируем окружения
+.env
+.env.*
